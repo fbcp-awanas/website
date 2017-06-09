@@ -110,7 +110,7 @@ class Family(Contact):
                                       verbose_name="Emergency Contact Name")
     ICEContactPhone = models.CharField(max_length=20,
                                        verbose_name="Emergency Contact Phone#")
-    pickup = models.TextField(help_text="Enter names of people approved for pick-up, one per line"
+    pickup = models.TextField(help_text="Enter names of people approved for pick-up, one per line",
                               verbose_name="Approved for pickup")
     attend_church = models.BooleanField(help_text="Does the family attend church?")
     church_name = models.CharField(max_length=100,

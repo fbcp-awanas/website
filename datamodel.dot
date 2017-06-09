@@ -1,47 +1,200 @@
 digraph awanas {
 
-//splines=ortho;
 concentrate=true;
-//edge [];
-
-// [label="<id>|{}"];
 
 node [shape=record];
 
-leader [label="<id>Leader|{First Name|Last Name|Phone|Email|Address|City|State|Zip|Position|<club>Club|Group|Schedule|<check_in>check_in()}"];
-clubber [label="<id>Clubber|{<family>Family|First Name|Last Name|<dob>DOB|Grade|Gender|Allergies|Medications|Special Instructions|Photo Release|Medical Release|Notes|<club>Club|Group|Color|<age>age()|<get_points>get_points()|<add_points>add_points()|<assign>assign_book()|<award>give_award()|<visitor>add_visitor()}"];
-visitor [label="<id>Visitor|{First Name|Last Name|<visiting>Guest of|Date}"];
-parent [label="<id>Parent|{First Name|Last Name|<family>Family|Phone|Email|Address|City|State|Zip|<pref_ph>Prefer Phone|<pref_e>Prefer Email}"];
-family [label="<id>Family|{Address|City|State|Zip|ICEContact|ICEPhone|Pickup|Attend Church|Church Name|<add_payment>add_payment()|<get_contacts>get_contacts()|<get_family>get_family()|<balance>get_balancesheet()}"];
-club [label="<id>Club|{Name|Age|<list_clubbers>list_clubbers()|<list_awards>list_awards()|<attendance>get_attendance()}"];
-handbook [label="<id>Handbook|{Name|<club>Club|Entrance Book|Extra Credit|Inventory Number|Sections|Verses}"];
-section [label="<id>Section|{Name|<book>Book|Content|In Order|Points}"];
-inv [label="<id>Inventory|{Item #|Quantity|<club>Club|Category|Order Threshold|Description|Picture|Price}"];
-activity [label="<id>Activity|{<clubber>Clubber|<section>Section|Complete|Date|<leader>Leader}"];
-points [label="<id>Points|{<clubber>Clubber|Points|Reason|Date|<leader>Leader}"];
-award [label="<id>Awards|{<clubber>Clubber|Description|Date Awarded|Delivered}"];
-attendance [label="<id>Attendance|{<clubber>Clubber|Date}"];
-l_attendance [label="<id>Leader Attendance|{<leader>Leader|Date}"];
-finance [label="<id>Finance|{<family>Family|Amount|Description|Date|Method}"];
-expenses [label="<id>Expenses|{Date|Receipt Date|Receipt Store|Items|Category|Amount|Payee}"];
+// Rank-order
+{
+    node [shape=plaintext];
+    edge [style=invis];
+    abstract -> primary -> secondary -> tertiary -> tracker;
+}
+{
+    { rank=same; abstract; A_person; A_contact; }
+    { rank=same; primary; family; club; inv; expenses; };
+    { rank=same; secondary; clubber; parent; handbook; leader; };
+    { rank=same; tertiary; visitor; section; };
+    { rank=same; tracker; finance; points; attendance; l_attendance; award; activity; };
+}
 
-clubber:family -> family:id [color=blue]
-parent:family -> family:id [color=blue]
-visitor:visiting -> clubber:id [color=green]
-clubber:club -> club:id [color=red]
-handbook:club -> club:id [color=red]
-leader:club -> club:id [color=red]
-section:book -> handbook:id
-inv:club -> club:id [color=red]
-activity:clubber -> clubber:id [color=green]
-activity:leader -> leader:id
-activity:section -> section:id
-points:clubber -> clubber:id [color=green]
-points:leader -> leader:id
-award:clubber -> clubber:id [color=green]
-l_attendance:leader -> leader:id
-attendance:clubber -> clubber:id [color=green]
-finance:family -> family:id [color=blue]
+//Abstract Models
+{
+    node [color=blue];
+    A_person [label="A_Person|{First Name|
+                               Last Name|
+                               full_name()}"];
+    A_contact [label="A_Contact|{Address|
+                                 City|
+                                 State|
+                                 Zip|
+                                 Phone|
+                                 Email}"];
+};
+
+// People
+{
+    leader [color=magenta label="<id>Leader|{Position|
+                                             <club>Club|
+                                             Group|
+                                             Schedule|
+                                             <check_in>check_in()}"];
+    clubber [color=darkgreen label="<id>Clubber|{<family>Family|
+                                                 <dob>DOB|
+                                                 Grade|
+                                                 Gender|
+                                                 Allergies|
+                                                 Medications|
+                                                 Special Instructions|
+                                                 Photo Release|
+                                                 Medical Release|
+                                                 Notes|
+                                                 <club>Club|
+                                                 Group|
+                                                 Color|
+                                                 <age>age()|
+                                                 <get_points>get_points()|
+                                                 <add_points>add_points()|
+                                                 <assign>assign_book()|
+                                                 <award>give_award()|
+                                                 <visitor>add_visitor()|
+                                                 <record>perm_record()}"];
+    visitor [label="<id>Visitor|
+                    {<visiting>Guest of|
+                    Date}"];
+    parent [label="<id>Parent|{<family>Family|
+                               <pref_ph>Prefer Phone|
+                               <pref_e>Prefer Email}"];
+    family [color=darkorange label="<id>Family|{Slug|
+                                                ICEContact|
+                                                ICEPhone|
+                                                Pickup|
+                                                Attend Church|
+                                                Church Name|
+                                                <get_clubbers>get_clubbers()|
+                                                <get_parents>get_parents()|
+                                                <get_contacts>get_contacts()|
+                                                <get_family>get_family()|
+                                                <balance>get_balancesheet()|
+                                                <add_payment>add_payment()}"];
+}
+
+// Club Info
+ {
+    club [color=red label="<id>Club|{Name|
+                                     Age|
+                                     <list_awards>list_awards()|
+                                     <list_clubbers>list_clubbers()|
+                                     <attendance>get_attendance()}" ];
+    handbook [label="<id>Handbook|{Name|
+                                   <club>Club|
+                                   Entrance Book|
+                                   Extra Credit|
+                                   <inv>Inventory Number|
+                                   Verses|
+                                   sections()}"];
+    section [label="<id>Section|{Name|
+                                 <book>Book|
+                                 Content|
+                                 In Order|
+                                 Points}"];
+    inv [label="<id>Inventory|{<id>Item #|
+                               Quantity|
+                               <club>Club|
+                               Category|
+                               Order Threshold|
+                               Description|
+                               Picture|
+                               Price}"];
+    activity [label="<id>Activity|{<clubber>Clubber|
+                                   <section>Section|
+                                   Complete|
+                                   Date|
+                                   <leader>Leader}"];
+    points [label="<id>Points|{<clubber>Clubber|
+                               Points|
+                               Reason|
+                               Date|
+                               <leader>Leader}"];
+    award [label="<id>Awards|{<clubber>Clubber|
+                              Description|
+                              Date Awarded|
+                              Delivered}"];
+    attendance [label="<id>Attendance|{<clubber>Clubber|
+                                       Date}"];
+    l_attendance [label="<id>Leader Attendance|{<leader>Leader|
+                                                Date}"];
+    finance [label="<id>Finance|{<family>Family|
+                                 Amount|
+                                 Description|
+                                 Date|
+                                 Method}"];
+    expenses [label="<id>Expenses|{Date|
+                                   Receipt Date|
+                                   Receipt Store|
+                                   Items|
+                                   Category|
+                                   Amount|
+                                   Payee}"];
+}
+
+
+
+// Abstract Model Relationships
+{
+    edge [color=blue style=dashed arrowhead=inv]
+    A_person:w -> leader:n
+    A_contact:w -> leader:n
+    A_person:w -> parent:n
+    A_contact:w -> parent:n
+    A_contact:w -> family:n
+    A_person:w -> clubber:n
+    A_person:w -> visitor:n
+}
+
+// Foreign Keys
+// -> family
+{
+    edge [color=darkorange]
+    clubber:family -> family:id:w
+    parent:family -> family:id:w
+    finance:family -> family:id:w
+}
+
+// -> clubber
+{
+    edge [color=darkgreen]
+    visitor:visiting -> clubber:id:w
+    activity:clubber -> clubber:id:w
+    points:clubber -> clubber:id:w
+    award:clubber -> clubber:id:w
+    attendance:clubber -> clubber:id:w
+}
+
+// -> club
+{
+    edge [color=red]
+    clubber:club -> club:id:w
+    handbook:club -> club:id:w
+    leader:club -> club:id:w
+    inv:club -> club:id:w
+}
+
+// -> leader
+{
+    edge [color=magenta]
+    points:leader -> leader:id:w
+    l_attendance:leader -> leader:id:w
+    activity:leader -> leader:id:w
+}
+
+// -> *
+{
+    handbook:inv -> inv:id:w
+    section:book -> handbook:id:w
+    activity:section -> section:id:w
+
+}
 
 // Family methods
 //family:balance -> finance:family [color=grey label=Find];
