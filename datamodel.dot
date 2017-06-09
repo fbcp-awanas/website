@@ -20,17 +20,16 @@ node [shape=record];
 
 //Abstract Models
 {
-    node [color=blue];
-    A_person [label="A_Person|{First Name|
-                               Last Name|
-                               full_name()}"];
-    A_contact [label="A_Contact|{Address|
-                                 City|
-                                 State|
-                                 Zip|
-                                 Phone|
-                                 Email}"];
-};
+    A_person [color=blue label="A_Person|{First Name|
+                                          Last Name|
+                                          full_name()}"];
+    A_contact [color=blue label="A_Contact|{Address|
+                                            City|
+                                            State|
+                                            Zip|
+                                            Phone|
+                                            Email}"];
+}
 
 // People
 {
