@@ -93,7 +93,7 @@ class Contact(models.Model):
                                help_text="Street number and name")
     city = models.CharField(max_length=20)
     state = models.CharField(max_length=2,
-                             choices=STATES.items())
+                             choices=STATES)
     zip = models.CharField(max_length=5,
                            help_text="Five-digit zip code")
     phone = models.CharField(max_length=15)
