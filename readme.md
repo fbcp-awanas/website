@@ -4,8 +4,9 @@
 The data model is stored in the project directory as a DOT file, which can be
 rendered by a number of tools, including [GraphViz](http://www.graphviz.org).
 To view the graph without installing any additional tools, copy the contents of
-`datamodel.dot` and use [WebGraphViz](http://webgraphviz.com) to convert to a
-visual graph.
+`datamodel.dot` and use
+[GraphvizOnline](https://dreampuf.github.io/GraphvizOnline/) (preferred) or
+[WebGraphViz](http://webgraphviz.com) to convert to a visual graph.
 
 ## How to use
 
