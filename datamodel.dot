@@ -1,6 +1,7 @@
 digraph awanas {
 
 concentrate=true;
+splines=curves;
 
 node [shape=record];
 
@@ -12,9 +13,9 @@ node [shape=record];
 }
 {
     { rank=same; abstract; A_person; A_contact; }
-    { rank=same; primary; family; club; inv; expenses; };
-    { rank=same; secondary; clubber; parent; handbook; leader; };
-    { rank=same; tertiary; visitor; section; };
+    { rank=same; primary; family; group; inv; expenses; };
+    { rank=same; secondary; clubber; parent; handbook; club; leader;};
+    { rank=same; tertiary; visitor; section;  };
     { rank=same; tracker; finance; points; attendance; l_attendance; award; activity; };
 }
 
@@ -34,8 +35,7 @@ node [shape=record];
 // People
 {
     leader [color=magenta label="<id>Leader|{Position|
-                                             <club>Club|
-                                             Group|
+                                             <group>Group|
                                              Schedule|
                                              <check_in>check_in()}"];
     clubber [color=darkgreen label="<id>Clubber|{<family>Family|
@@ -48,9 +48,10 @@ node [shape=record];
                                                  Photo Release|
                                                  Medical Release|
                                                  Notes|
-                                                 <club>Club|
-                                                 Group|
+                                                 <group>Group|
                                                  Color|
+                                                 <guest>Guest|
+                                                 Guest of|
                                                  <age>age()|
                                                  <get_points>get_points()|
                                                  <add_points>add_points()|
@@ -58,9 +59,7 @@ node [shape=record];
                                                  <award>give_award()|
                                                  <visitor>add_visitor()|
                                                  <record>perm_record()}"];
-    visitor [label="<id>Visitor|
-                    {<visiting>Guest of|
-                    Date}"];
+    visitor [label="<id>Visitor|{get_pickup()}"]
     parent [label="<id>Parent|{<family>Family|
                                <pref_ph>Prefer Phone|
                                <pref_e>Prefer Email}"];
@@ -85,6 +84,9 @@ node [shape=record];
                                      <list_awards>list_awards()|
                                      <list_clubbers>list_clubbers()|
                                      <attendance>get_attendance()}" ];
+    group [label="<id>Group|{Name|
+                             <club>Club|
+                             <leader>Leaders}"]
     handbook [label="<id>Handbook|{Name|
                                    <club>Club|
                                    Entrance Book|
@@ -149,6 +151,7 @@ node [shape=record];
     A_contact:w -> family:n
     A_person:w -> clubber:n
     A_person:w -> visitor:n
+    clubber:guest:e -> visitor:n [label="proxy"]
 }
 
 // Foreign Keys
@@ -163,7 +166,6 @@ node [shape=record];
 // -> clubber
 {
     edge [color=darkgreen]
-    visitor:visiting -> clubber:id:w
     activity:clubber -> clubber:id:w
     points:clubber -> clubber:id:w
     award:clubber -> clubber:id:w
@@ -173,10 +175,9 @@ node [shape=record];
 // -> club
 {
     edge [color=red]
-    clubber:club -> club:id:w
     handbook:club -> club:id:w
-    leader:club -> club:id:w
     inv:club -> club:id:w
+    group:club -> club:id:w
 }
 
 // -> leader
@@ -185,6 +186,7 @@ node [shape=record];
     points:leader -> leader:id:w
     l_attendance:leader -> leader:id:w
     activity:leader -> leader:id:w
+    "group":leader:e -> leader:group:e [color="magenta:invis:magenta"]
 }
 
 // -> *
@@ -192,6 +194,7 @@ node [shape=record];
     handbook:inv -> inv:id:w
     section:book -> handbook:id:w
     activity:section -> section:id:w
+    clubber:group -> group:id:w
 
 }
 
