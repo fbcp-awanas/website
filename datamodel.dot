@@ -57,7 +57,8 @@ nodesep=.6;
                                              <get_points>get_points()|
                                              <add_points>add_points()|
                                              <assign>assign_book()|
-                                             <record>perm_record()}"];
+                                             <record>perm_record()|
+                                             <attendance>get_attendance()}"];
     visitor [label="<id>Visitor|{get_pickup()}"]
     clubber [label="<id>Clubber|{<award>give_award()}"]
     parent [label="<id>Parent|{<family>Family|
@@ -122,7 +123,10 @@ nodesep=.6;
                               Date Earned|
                               Delivered}"];
     attendance [label="<id>Attendance|{<child>Child|
-                                       Date}"];
+                                       Date|
+                                       Time|
+                                       Status|
+                                       OnTime}"];
     l_attendance [label="<id>Leader Attendance|{<leader>Leader|
                                                 Date}"];
     ledger [label="<id>Ledger|{<family>Family|
@@ -158,8 +162,8 @@ nodesep=.6;
 // -> family
 {
     edge [color=darkorange]
-    child:family -> family:id:w
-    parent:family -> family:id:w
+    child:family:e -> family:id:w
+    parent:family:e -> family:id:w
     ledger:family:e -> family:id:w
 }
 
@@ -175,9 +179,9 @@ nodesep=.6;
 // -> group
 {
     edge [color=red]
-    handbook:group -> group:id:w
-    clubber:group -> group:id:w
-    inv:group -> "group":id:w
+    handbook:group:e -> group:id:w
+    child:group:e -> group:id:w
+    inv:group:e -> "group":id:w
 }
 
 // -> leader
