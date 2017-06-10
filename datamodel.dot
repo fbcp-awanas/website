@@ -1,7 +1,7 @@
 digraph awanas {
 
-concentrate=true;
-splines=curves;
+// concentrate=true;
+// splines=;
 
 node [shape=record];
 
@@ -13,9 +13,9 @@ node [shape=record];
 }
 {
     { rank=same; abstract; A_person; A_contact; }
-    { rank=same; primary; family; group; inv; expenses; };
-    { rank=same; secondary; clubber; parent; handbook; club; leader;};
-    { rank=same; tertiary; visitor; section;  };
+    { rank=same; primary; family; expenses; group; };
+    { rank=same; secondary; clubber; parent; handbook; leader;};
+    { rank=same; tertiary; visitor; section; inv; };
     { rank=same; tracker; finance; points; attendance; l_attendance; award; activity; };
 }
 
@@ -79,16 +79,15 @@ node [shape=record];
 
 // Club Info
  {
-    club [color=red label="<id>Club|{Name|
-                                     Age|
-                                     <list_awards>list_awards()|
-                                     <list_clubbers>list_clubbers()|
-                                     <attendance>get_attendance()}" ];
-    group [label="<id>Group|{Name|
-                             <club>Club|
-                             <leader>Leaders}"]
+    group [color=red label="<id>Group|{Name|
+                                       Club|
+                                       Age|
+                                       <leader>Leaders|
+                                       <list_awards>list_awards()|
+                                       <list_clubbers>list_clubbers()|
+                                       <attendance>get_attendance()}" ];
     handbook [label="<id>Handbook|{Name|
-                                   <club>Club|
+                                   <group>Group|
                                    Entrance Book|
                                    Extra Credit|
                                    <inv>Inventory Number|
@@ -101,7 +100,7 @@ node [shape=record];
                                  Points}"];
     inv [label="<id>Inventory|{<id>Item #|
                                Quantity|
-                               <club>Club|
+                               <group>Group|
                                Category|
                                Order Threshold|
                                Description|
@@ -172,12 +171,12 @@ node [shape=record];
     attendance:clubber -> clubber:id:w
 }
 
-// -> club
+// -> group
 {
     edge [color=red]
-    handbook:club -> club:id:w
-    inv:club -> club:id:w
-    group:club -> club:id:w
+    handbook:group -> group:id:w
+    clubber:group -> group:id:w
+    inv:group -> "group":id:w
 }
 
 // -> leader
@@ -194,8 +193,6 @@ node [shape=record];
     handbook:inv -> inv:id:w
     section:book -> handbook:id:w
     activity:section -> section:id:w
-    clubber:group -> group:id:w
-
 }
 
 // Family methods
