@@ -2,6 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 import datetime as dt
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 # Field Type Reference:
 # https://docs.djangoproject.com/en/1.11/ref/models/fields/
@@ -227,7 +228,10 @@ class Leader(Person, Contact):
     )
     #TODO: add ability to have multiple leader positions
     
-    cpp = models.NullBooleanField()
+    user = models.OneToOneField(User, 
+                                on_delete=models.CASCADE)
+    # {None: No Data, True: Received, False: Not possible}
+    cpp = models.NullBooleanField(verbose_name="Child Protective Policy")
     position = models.CharField(max_length=9,
                                 choices=POSITIONS)
     club = models.ForeignKey('Club')
