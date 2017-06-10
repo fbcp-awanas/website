@@ -34,7 +34,6 @@ class Contact(models.Model):
         ('AK', 'Alaska'),
         ('AL', 'Alabama'),
         ('AR', 'Arkansas'),
-        ('AS', 'American Samoa'),
         ('AZ', 'Arizona'),
         ('CA', 'California'),
         ('CO', 'Colorado'),
@@ -58,7 +57,6 @@ class Contact(models.Model):
         ('MI', 'Michigan'),
         ('MN', 'Minnesota'),
         ('MO', 'Missouri'),
-        ('MP', 'Northern Mariana Islands'),
         ('MS', 'Mississippi'),
         ('MT', 'Montana'),
         ('NA', 'National'),
@@ -81,7 +79,6 @@ class Contact(models.Model):
         ('TN', 'Tennessee'),
         ('UT', 'Utah'),
         ('VA', 'Virginia'),
-        ('VI', 'Virgin Islands'),
         ('VT', 'Vermont'),
         ('WA', 'Washington'),
         ('WI', 'Wisconsin'),
@@ -93,7 +90,8 @@ class Contact(models.Model):
                                help_text="Street number and name")
     city = models.CharField(max_length=20)
     state = models.CharField(max_length=2,
-                             choices=STATES)
+                             choices=STATES,
+                             default="TX")
     zip = models.CharField(max_length=5,
                            help_text="Five-digit zip code")
     phone = models.CharField(max_length=15)
@@ -110,11 +108,11 @@ class Family(Contact):
                                       verbose_name="Emergency Contact Name")
     ICEContactPhone = models.CharField(max_length=20,
                                        verbose_name="Emergency Contact Phone#")
-    pickup = models.TextField(help_text="Enter names of people approved for pick-up, one per line",
+    pickup = models.TextField(help_text="Enter names of people other than parents approved for pick-up, one per line",
                               verbose_name="Approved for pickup")
     attend_church = models.BooleanField(help_text="Does the family attend church?")
     church_name = models.CharField(max_length=100,
-                                   help_text="What church does the family attend?")
+                                   help_text="What church does the family attend (if yes to the above)?")
     #TODO: Slug for families - based on last name of first child added?
     #slug = models.SlugField(unique=True)
 
@@ -319,7 +317,7 @@ class Attendance(models.Model):
               ('E', 'Excused'))
     clubber = models.ForeignKey('Clubber',
                                 unique_for_date='date')
-    date = models.DateTime(default=dt.date.today())
+    date = models.DateTimeField(default=dt.date.today())
     time = models.TimeField(defalt=timezone.now())
     status = models.CharField(max_length=1,
                               choices=STATUS)
