@@ -207,38 +207,39 @@ class Visitor(Person):
 
 
 class Leader(Person, Contact):
-    LPos = (
+    POSITIONS = (
         ('Com', 'Commander'),
-        ('Sec', 'Secretary')
-        ('PugLead', 'Puggles Leader')
-        ('PugAs', 'Puggles Assitant')
-        ('PugStu', 'Puggles Student Helper')
-        ('CubDir', 'Cubbies Director')
-        ('CubLead', 'Cubbies Leader')
-        ('CubAs', 'Cubbies Assitant') 
-        ('CubStu', 'Cubbies Student Helper')
-        ('SpkDir', 'Sparks Director')
-        ('SpkLead', 'Sparks Leader')
-        ('SpkAs', 'Sparks Assitant') 
-        ('SpkStu', 'Sparks Student Helper')
-        ('TTDir', 'T&T Director')
-        ('TTLead', 'T&T Leader')
-        ('TTAs', 'T&T Assitant') 
-        ('TTStu', 'T&T Student Helper')
-        ('GameLead', 'Game Leader')
-        ('GameAs', 'Game Assistant')
-        ("GameStu", 'Game Student Helper')
-        ('Listener', 'Listener')
-        ('StoreShop', 'Store Shopper')
-        ('StoreCoor', 'Store Coordinator')
-        ('StoreHelp', 'Store Helper')
-        ('StoreWrap', 'Store Wrapper')
+        ('Sec', 'Secretary'),
+        ('PugLead', 'Puggles Leader'),
+        ('PugAs', 'Puggles Assitant'),
+        ('PugStu', 'Puggles Student Helper'),
+        ('CubDir', 'Cubbies Director'),
+        ('CubLead', 'Cubbies Leader'),
+        ('CubAs', 'Cubbies Assitant'),
+        ('CubStu', 'Cubbies Student Helper'),
+        ('SpkDir', 'Sparks Director'),
+        ('SpkLead', 'Sparks Leader'),
+        ('SpkAs', 'Sparks Assitant'),
+        ('SpkStu', 'Sparks Student Helper'),
+        ('TTDir', 'T&T Director'),
+        ('TTLead', 'T&T Leader'),
+        ('TTAs', 'T&T Assitant'),
+        ('TTStu', 'T&T Student Helper'),
+        ('GameLead', 'Game Leader'),
+        ('GameAs', 'Game Assistant'),
+        ("GameStu", 'Game Student Helper'),
+        ('Listener', 'Listener'),
+        ('StoreShop', 'Store Shopper'),
+        ('StoreCoor', 'Store Coordinator'),
+        ('StoreHelp', 'Store Helper'),
+        ('StoreWrap', 'Store Wrapper'),
         ('Float', 'Floater')
     )
-    #add ability to have multiple leader positions
+    #TODO: add ability to have multiple leader positions
     
     cpp = models.NullBooleanField()
-    position = models.CharField(max_length=50)
+    position = models.CharField(max_length=9,
+                                choices=POSITIONS)
     club = models.ForeignKey('Club')
     # group =
     # schedule =
