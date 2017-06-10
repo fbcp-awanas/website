@@ -17,7 +17,7 @@ nodesep=.6;
     { rank=same; primary; family; expenses; group; };
     { rank=same; secondary; child; parent; handbook; leader;};
     { rank=same; tertiary; visitor; clubber; section; inv; };
-    { rank=same; progress; ledger; points; attendance; l_attendance; award; activity; };
+    { rank=same; progress; ledger; points; attendance; l_attendance; award; activity; message};
 }
 
 //Abstract Models
@@ -141,6 +141,8 @@ nodesep=.6;
                                    Category|
                                    Amount|
                                    Payee}"];
+    message [label="<id>Message|{Content|
+                                 <leader>Leader}"]
 }
 
 
@@ -190,6 +192,7 @@ nodesep=.6;
     points:leader:e -> leader:id:w
     l_attendance:leader:e -> leader:id:w
     activity:leader:e -> leader:id:w
+    message:leader:e -> leader:id:w
     "group":leader:e -> leader:group:e [color="magenta:invis:magenta"]
 }
 
