@@ -4,19 +4,20 @@ digraph awanas {
 // splines=;
 
 node [shape=record];
+nodesep=.6;
 
 // Rank-order
 {
     node [shape=plaintext];
     edge [style=invis];
-    abstract -> primary -> secondary -> tertiary -> tracker;
+    abstract -> primary -> secondary -> tertiary -> progress;
 }
 {
     { rank=same; abstract; A_person; A_contact; }
     { rank=same; primary; family; expenses; group; };
-    { rank=same; secondary; clubber; parent; handbook; leader;};
-    { rank=same; tertiary; visitor; section; inv; };
-    { rank=same; tracker; finance; points; attendance; l_attendance; award; activity; };
+    { rank=same; secondary; child; parent; handbook; leader;};
+    { rank=same; tertiary; visitor; clubber; section; inv; };
+    { rank=same; progress; ledger; points; attendance; l_attendance; award; activity; };
 }
 
 //Abstract Models
@@ -38,28 +39,27 @@ node [shape=record];
                                              <group>Group|
                                              Schedule|
                                              <check_in>check_in()}"];
-    clubber [color=darkgreen label="<id>Clubber|{<family>Family|
-                                                 <dob>DOB|
-                                                 Grade|
-                                                 Gender|
-                                                 Allergies|
-                                                 Medications|
-                                                 Special Instructions|
-                                                 Photo Release|
-                                                 Medical Release|
-                                                 Notes|
-                                                 <group>Group|
-                                                 Color|
-                                                 <guest>Guest|
-                                                 Guest of|
-                                                 <age>age()|
-                                                 <get_points>get_points()|
-                                                 <add_points>add_points()|
-                                                 <assign>assign_book()|
-                                                 <award>give_award()|
-                                                 <visitor>add_visitor()|
-                                                 <record>perm_record()}"];
+    child [color=darkgreen label="<id>Child|{<family>Family|
+                                             <dob>DOB|
+                                             Grade|
+                                             Gender|
+                                             Allergies|
+                                             Medications|
+                                             Special Instructions|
+                                             Photo Release|
+                                             Medical Release|
+                                             Notes|
+                                             <group>Group|
+                                             Color|
+                                             <guest>Guest|
+                                             Guest of|
+                                             <age>age()|
+                                             <get_points>get_points()|
+                                             <add_points>add_points()|
+                                             <assign>assign_book()|
+                                             <record>perm_record()}"];
     visitor [label="<id>Visitor|{get_pickup()}"]
+    clubber [label="<id>Clubber|{<award>give_award()}"]
     parent [label="<id>Parent|{<family>Family|
                                <pref_ph>Prefer Phone|
                                <pref_e>Prefer Email}"];
@@ -105,30 +105,31 @@ node [shape=record];
                                Order Threshold|
                                Description|
                                Picture|
-                               Price}"];
-    activity [label="<id>Activity|{<clubber>Clubber|
+                               Price|
+                               Cost}"];
+    activity [label="<id>Activity|{<child>Child|
                                    <section>Section|
                                    Complete|
                                    Date|
                                    <leader>Leader}"];
-    points [label="<id>Points|{<clubber>Clubber|
+    points [label="<id>Points|{<child>Child|
                                Points|
                                Reason|
                                Date|
                                <leader>Leader}"];
-    award [label="<id>Awards|{<clubber>Clubber|
+    award [label="<id>Awards|{<child>Child|
                               Description|
-                              Date Awarded|
+                              Date Earned|
                               Delivered}"];
-    attendance [label="<id>Attendance|{<clubber>Clubber|
+    attendance [label="<id>Attendance|{<child>Child|
                                        Date}"];
     l_attendance [label="<id>Leader Attendance|{<leader>Leader|
                                                 Date}"];
-    finance [label="<id>Finance|{<family>Family|
-                                 Amount|
-                                 Description|
-                                 Date|
-                                 Method}"];
+    ledger [label="<id>Ledger|{<family>Family|
+                               Amount|
+                               Description|
+                               Date|
+                               Method}"];
     expenses [label="<id>Expenses|{Date|
                                    Receipt Date|
                                    Receipt Store|
@@ -148,27 +149,27 @@ node [shape=record];
     A_person:w -> parent:n
     A_contact:w -> parent:n
     A_contact:w -> family:n
-    A_person:w -> clubber:n
-    A_person:w -> visitor:n
-    clubber:guest:e -> visitor:n [label="proxy"]
+    A_person:w -> child:n
+    child:guest:e -> visitor:n [label="proxy"]
+    child:guest:e -> clubber:n [label="proxy"]
 }
 
 // Foreign Keys
 // -> family
 {
     edge [color=darkorange]
-    clubber:family -> family:id:w
+    child:family -> family:id:w
     parent:family -> family:id:w
-    finance:family -> family:id:w
+    ledger:family:e -> family:id:w
 }
 
-// -> clubber
+// -> child
 {
     edge [color=darkgreen]
-    activity:clubber -> clubber:id:w
-    points:clubber -> clubber:id:w
-    award:clubber -> clubber:id:w
-    attendance:clubber -> clubber:id:w
+    activity:child:e -> child:id:w
+    points:child:e -> child:id:w
+    award:child:e -> child:id:w
+    attendance:child:e -> child:id:w
 }
 
 // -> group
@@ -182,9 +183,9 @@ node [shape=record];
 // -> leader
 {
     edge [color=magenta]
-    points:leader -> leader:id:w
-    l_attendance:leader -> leader:id:w
-    activity:leader -> leader:id:w
+    points:leader:e -> leader:id:w
+    l_attendance:leader:e -> leader:id:w
+    activity:leader:e -> leader:id:w
     "group":leader:e -> leader:group:e [color="magenta:invis:magenta"]
 }
 
@@ -195,26 +196,5 @@ node [shape=record];
     activity:section -> section:id:w
 }
 
-// Family methods
-//family:balance -> finance:family [color=grey label=Find];
-//family:get_contacts -> parent:family [color=grey label=Find];
-//family:get_family -> clubber:family [color=grey label=Find];
-//family:get_family -> parent:family [color=grey label=Find];
-//family:add_payment -> finance:id [color=grey label=Create];
-
-// Clubber methods
-//clubber:get_points -> points:clubber [color=grey label=Find]
-//clubber:add_points -> points:id [color=grey label=Create]
-//clubber:assign -> activity:id [color=grey label=Create]
-//clubber:award -> award:id [color=grey label=Create]
-//clubber:visitor -> visitor:id [color=grey label=Create]
-
-// Leader methods
-//leader:check_in -> l_attendance:id [color=grey label=Create]
-
-// Club methods
-//club:list_awards -> award:clubber [color=grey label=Find]
-//club:list_clubbers -> clubber:club [color=grey label=Find]
-//club:attendance -> attendance:clubber [color=grey label=Find]
 }
 
