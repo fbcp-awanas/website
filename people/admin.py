@@ -25,7 +25,7 @@ NAMEFIELDSET = [
 
 @admin.register(Parent)
 class ParentAdmin(admin.ModelAdmin):
-    _ADDRESSFIELDSET = ADDRESSFIELDSET[:]
+    _ADDRESSFIELDSET = ADDRESSFIELDSET.copy()
     _ADDRESSFIELDSET[0][1]['classes'] = ('collapse',)
 
     fieldsets = [(
@@ -68,7 +68,7 @@ class ChildAdmin(admin.ModelAdmin):
         })
     )
 
-    list_display = ('first_name', 'last_name', 'guest', 'family', 'official_age', 'group', 'color')
+    list_display = ('first_name', 'last_name', 'guest', 'family', 'grade', 'official_age', 'group', 'color')
     list_editable = ('group', 'color', 'family',)
     list_filter = ('group', 'guest')
 

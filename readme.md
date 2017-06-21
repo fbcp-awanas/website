@@ -78,6 +78,7 @@ address instead.
     pip install -r requirements.txt
 
     # Set up the database and superuser
+    ./manage.py makemigrations
     ./manage.py migrate
     ./manage.py createsuperuser
     ```
@@ -90,9 +91,24 @@ You now have a copy of the project locally on your disk.
 should see the project name in parentheses to the left of your prompt to
 indicate that the project is active.
 3. Run `./manage.py runserver`
+    **Note:** You may want to run `./manage.py makemigrations` first, to 
+    make sure that no changes to the model have been perpetrated since you 
+    last updated the db. If any new migrations exist, run `./manage.py migrate` 
+    to apply them, then run `./manage.py runserver`
 4. Open a web browser to `http://127.0.0.1:8000/admin` to log into the admin
 interface using your superuser credentials
     **Note:** If you don't know your superuser credentials, run `./manage.py createsuperuser` to make a new one.
+
+### Starting over
+It may be necessary to start from scratch (for example, to test new procedures with dummy data). If so:
+
+1. Delete the `db.sqlite3` file
+2. Re-set up the database and superuser
+    ```
+    ./manage.py makemigrations
+    ./manage.py migrate
+    ./manage.py createsuperuser
+    ```
 
 ### Making changes
 If you make changes to the files in the project directory, you should make sure

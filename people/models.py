@@ -135,15 +135,15 @@ class Child(A_Person):
               ('G', 'Green')
               )
     
-    GRADES = [(-1, 'Preschool')] + [(i, v) 
-                                    for i, v 
-                                    in enumerate(['Kindergarten', 
-                                                  'First', 
-                                                  'Second', 
-                                                  'Third', 
-                                                  'Fourth', 
-                                                  'Fifth', 
-                                                  'Sixth'])]
+    GRADES = [(-1, 'P-Preschool')] + [(i, v) 
+                                      for i, v 
+                                      in enumerate(['K-Kindergarten', 
+                                                    '1-First', 
+                                                    '2-Second', 
+                                                    '3-Third', 
+                                                    '4-Fourth', 
+                                                    '5-Fifth', 
+                                                    '6-Sixth'])]
     
     family = models.ForeignKey('Family',
                                on_delete=models.CASCADE,
@@ -159,7 +159,7 @@ class Child(A_Person):
     medications = models.TextField(blank=True, null=True)
     special_instructions = models.TextField(blank=True, null=True)
     # Using NullBool to represent the three states - (not turned in|not allowed|allowed)
-    photo_release = models.NullBooleanField()
+    photo_release = models  .NullBooleanField(help_text="Unknown: Release not received - Yes/No: Release status")
     medical_release = models.BooleanField()
     notes = models.TextField(blank=True, null=True)
     #TODO: Foreign key map to club.group
