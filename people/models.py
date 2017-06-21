@@ -413,9 +413,9 @@ class Leader(AbstractUser, A_Contact):
                                 choices=POSITIONS,
                                 null=True, blank=True)
     #TODO: Foreign key map to club.group
-    group = models.CharField(max_length=2,
-                             choices=GROUPLIST,
-                             null=True, blank=True)
+    # group = models.CharField(max_length=2,
+    #                          choices=GROUPLIST,
+    #                          null=True, blank=True)
     #TODO: What does this need to be?
     # schedule = 
 
@@ -432,7 +432,7 @@ class Leader(AbstractUser, A_Contact):
         self.clean_phone()
 
     def __str__(self):
-        return self.get_full_name() or self.username
+        return '{} ({})'.format(self.get_full_name(), self.username) if self.get_full_name() else self.username
 
     class Meta:
         verbose_name_plural = "leaders"

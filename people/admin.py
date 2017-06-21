@@ -113,7 +113,7 @@ class LeaderChangeForm(UserChangeForm):
 class LeaderAdmin(UserAdmin):
     fieldsets = NAMEFIELDSET + ADDRESSFIELDSET + CONTACTFIELDSET + [
         ('Leader Info', {
-            'fields': (('position', 'group'),
+            'fields': (('position'),
                         'cpp',
                         'parent')
         }),

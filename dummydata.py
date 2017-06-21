@@ -1,5 +1,7 @@
-import setup
+from setup import *
 import datetime
+
+#TODO: Add dummy groups
 
 families = [
     {'attend_church': True, 'city': 'Garland', 'address': '3430 Rockcrest Drive', 'slug': 'Owen', 'ICEContactPhone': '(214) 686-5808', 'zip': '75044', 'ICEContactName': 'Jeremy Welch', 'church_name': 'FBC Plano', 'pickup': '', 'state': 'TX'},
