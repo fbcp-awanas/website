@@ -74,8 +74,34 @@ class ParentAdmin(admin.ModelAdmin):
 
 @admin.register(Child)
 class ChildAdmin(admin.ModelAdmin):
+    class ClubFilter(admin.SimpleListFilter):
+        title = _('Club')
+        parameter_name = 'club'
+
+        def lookups(self, request, model_admin):
+            return (
+                ('awanas', 'Awanas'),
+                ('puggles', 'Puggles'),
+                ('cubbies', 'Cubbies'),
+                ('sparks', 'Sparks'),
+                ('tnt', 'Truth & Training')
+            )
+        
+        def queryset(self, request, queryset):
+            if self.value() == 'awanas':
+                return queryset.filter(group__club='A')
+            if self.value() == 'puggles':
+                return queryset.filter(group__club='P')
+            if self.value() == 'cubbies':
+                return queryset.filter(group__club='C')
+            if self.value() == 'sparks':
+                return queryset.filter(group__club='S')
+            if self.value() == 'tnt':
+                return queryset.filter(group__club='T')
+
+    
     search_fields = ('first_name', 'last_name', 'family__slug')
-    readonly_fields = ('age','official_age')
+    readonly_fields = ('age', 'official_age', 'club')
     fieldsets = (
         (None, {
             'fields': (
@@ -102,7 +128,9 @@ class ChildAdmin(admin.ModelAdmin):
 
     list_display = ('first_name', 'last_name', 'guest', 'family', 'grade', 'official_age', 'group', 'color')
     list_editable = ('group', 'color', 'family',)
-    list_filter = ('group', 'guest')
+    list_filter = (('group', admin.RelatedOnlyFieldListFilter),
+                   ClubFilter, 
+                   'guest')
 
 
 class LeaderChangeForm(UserChangeForm):
@@ -132,4 +160,6 @@ class LeaderAdmin(UserAdmin):
             'classes': ('collapse',)
         })
         ]
+    
+    # list_filter = (('group', admin.RelatedOnlyFieldListFilter),)
         

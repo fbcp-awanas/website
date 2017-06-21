@@ -1,5 +1,5 @@
 from django.db import models
-from people.models import Leader
+import people
 
 class Group(models.Model):
     CLUBLIST = (
@@ -17,10 +17,11 @@ class Group(models.Model):
                             default='A')
     age = models.CharField(max_length=10,
                            help_text="Age range for this group.")
-    grades = models.CharField(max_length=5,
+    grades = models.CharField(max_length=10,
                               help_text="Grades included in this group.")
-    leaders = models.ManyToManyField(Leader,
-                                     related_name='group')
+    leaders = models.ManyToManyField('people.Leader',
+                                     related_name='group',
+                                     blank=True)
     
     def list_awards(self):
         """ Get a list of all of the outstanding awards for this group """

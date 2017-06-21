@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from club.models import Group
 import itertools
 import phonenumbers
 
@@ -159,13 +160,12 @@ class Child(A_Person):
     medications = models.TextField(blank=True, null=True)
     special_instructions = models.TextField(blank=True, null=True)
     # Using NullBool to represent the three states - (not turned in|not allowed|allowed)
-    photo_release = models  .NullBooleanField(help_text="Unknown: Release not received - Yes/No: Release status")
+    photo_release = models.NullBooleanField(help_text="Unknown: Release not received - Yes/No: Release status")
     medical_release = models.BooleanField()
     notes = models.TextField(blank=True, null=True)
-    #TODO: Foreign key map to club.group
-    group = models.CharField(max_length=2,
-                             choices=GROUPLIST,
-                             null=True)
+    group = models.ForeignKey(Group, 
+                              related_name='children', 
+                              on_delete=models.CASCADE)
     guest = models.BooleanField()
     guest_of = models.ForeignKey('self',
                                  related_name='guests',
@@ -174,7 +174,11 @@ class Child(A_Person):
     color = models.CharField(max_length=1,
                              blank=True, null=True,
                              choices=COLORS)
-
+    
+    @property
+    def club(self):
+        return self.group.club
+    
     class Meta:
         verbose_name_plural = 'children'
     
@@ -412,10 +416,6 @@ class Leader(AbstractUser, A_Contact):
     position = models.CharField(max_length=9,
                                 choices=POSITIONS,
                                 null=True, blank=True)
-    #TODO: Foreign key map to club.group
-    # group = models.CharField(max_length=2,
-    #                          choices=GROUPLIST,
-    #                          null=True, blank=True)
     #TODO: What does this need to be?
     # schedule = 
 
