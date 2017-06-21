@@ -12,8 +12,6 @@ from club.models import Group
 import itertools
 import phonenumbers
 
-# Create your models here.
-
 GROUPLIST = (
     ('A', 'Awanas'),
     ('P', 'Puggles'),
