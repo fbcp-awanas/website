@@ -23,15 +23,47 @@ NAMEFIELDSET = [
     })
 ]
 
+
+@admin.register(Family)
+class FamilyAdmin(admin.ModelAdmin):
+    list_display = ('slug', 'children_short', 'parents_short')
+    fieldsets = ADDRESSFIELDSET + [
+        ('Church Info', {
+            'fields': (('attend_church', 'church_name'),)
+        }),
+        ('Emergency Contact',{
+            'fields': (('ICEContactName', 'ICEContactPhone'),)
+        }),
+        ('Pickup List', {
+            'fields': ('pickup',)
+        }),
+        ('slug', {
+            'fields': ('slug',),
+            'classes': ('collapse',)
+        })
+    ]
+
+    def update_slug(modeladmin, request, queryset):
+        queryset.update(slug='')
+        for f in queryset:
+            f.save()
+    update_slug.short_description = "Update family name"
+
+    actions = [update_slug]
+
+
 @admin.register(Parent)
 class ParentAdmin(admin.ModelAdmin):
-    _ADDRESSFIELDSET = ADDRESSFIELDSET.copy()
-    _ADDRESSFIELDSET[0][1]['classes'] = ('collapse',)
-
     fieldsets = [(
         None, {
             'fields': (('first_name', 'last_name', 'family'),)
-        })] + _ADDRESSFIELDSET + CONTACTFIELDSET + [
+        })] + [
+        ('Address', {
+            'fields': ('address', 
+                      ('city', 'state', 'zip')),
+            'classes': ('collapse',)
+        })
+    ] + CONTACTFIELDSET + [
         ('Preferred Contact Methods', {
             'fields': (('prefer_phone', 'prefer_email'),)
         }),
@@ -72,33 +104,6 @@ class ChildAdmin(admin.ModelAdmin):
     list_editable = ('group', 'color', 'family',)
     list_filter = ('group', 'guest')
 
-
-@admin.register(Family)
-class FamilyAdmin(admin.ModelAdmin):
-    list_display = ('slug', 'children_short', 'parents_short')
-    fieldsets = ADDRESSFIELDSET + [
-        ('Church Info', {
-            'fields': (('attend_church', 'church_name'),)
-        }),
-        ('Emergency Contact',{
-            'fields': (('ICEContactName', 'ICEContactPhone'),)
-        }),
-        ('Pickup List', {
-            'fields': ('pickup',)
-        }),
-        ('slug', {
-            'fields': ('slug',),
-            'classes': ('collapse',)
-        })
-    ]
-
-    def update_slug(modeladmin, request, queryset):
-        queryset.update(slug='')
-        for f in queryset:
-            f.save()
-    update_slug.short_description = "Update family name"
-
-    actions = [update_slug]
 
 class LeaderChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
