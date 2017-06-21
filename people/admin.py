@@ -25,10 +25,13 @@ NAMEFIELDSET = [
 
 @admin.register(Parent)
 class ParentAdmin(admin.ModelAdmin):
+    _ADDRESSFIELDSET = ADDRESSFIELDSET[:]
+    _ADDRESSFIELDSET[0][1]['classes'] = ('collapse',)
+
     fieldsets = [(
         None, {
             'fields': (('first_name', 'last_name', 'family'),)
-        })] + ADDRESSFIELDSET + CONTACTFIELDSET + [
+        })] + _ADDRESSFIELDSET + CONTACTFIELDSET + [
         ('Preferred Contact Methods', {
             'fields': (('prefer_phone', 'prefer_email'),)
         }),
@@ -40,12 +43,12 @@ class ParentAdmin(admin.ModelAdmin):
 @admin.register(Child)
 class ChildAdmin(admin.ModelAdmin):
     search_fields = ('first_name', 'last_name', 'family__slug')
-    readonly_fields = ('age',)
+    readonly_fields = ('age','official_age')
     fieldsets = (
         (None, {
             'fields': (
                 ('first_name', 'last_name', 'family'),
-                ('dob', 'age',),
+                ('dob', 'age', 'official_age'),
                 ('gender', 'grade'),
             )
         }),
@@ -65,8 +68,8 @@ class ChildAdmin(admin.ModelAdmin):
         })
     )
 
-    list_display = ('first_name', 'last_name', 'family', 'grade', 'guest', 'group', 'color')
-    list_editable = ('group', 'color', 'family', 'grade')
+    list_display = ('first_name', 'last_name', 'guest', 'family', 'official_age', 'group', 'color')
+    list_editable = ('group', 'color', 'family',)
     list_filter = ('group', 'guest')
 
 

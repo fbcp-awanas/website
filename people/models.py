@@ -6,7 +6,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 import itertools
+import phonenumbers
 
 # Create your models here.
 
@@ -98,15 +101,29 @@ class A_Contact(models.Model):
     )
 
     address = models.CharField(max_length=50,
-                               help_text="Street number and name")
-    city = models.CharField(max_length=20)
+                               help_text="Street number and name",
+                               blank=True, null=True)
+    city = models.CharField(max_length=20,
+                            blank=True, null=True)
     state = models.CharField(max_length=2,
                              choices=STATES,
-                             default="TX")
+                             default="TX",
+                             blank=True, null=True)
     zip = models.CharField(max_length=5,
-                           help_text="Five-digit zip code")
+                           help_text="Five-digit zip code",
+                           blank=True, null=True)
     phone = models.CharField(max_length=15)
-    
+
+    def clean_phone(self):
+        pn = phonenumbers.parse(self.phone, "US")
+        if not all([phonenumbers.is_valid_number(pn), phonenumbers.is_possible_number(pn)]):
+            raise ValidationError(_("Phone number is invalid."))
+        else:
+            self.phone = phonenumbers.format_number(pn, phonenumbers.PhoneNumberFormat.NATIONAL)
+
+    def clean(self):
+        self.clean_phone()
+
     class Meta:
         abstract = True
 
@@ -118,13 +135,15 @@ class Child(A_Person):
               ('G', 'Green')
               )
     
-    GRADES = [(i, v) for i, v in enumerate(['Kindergarten', 
-                                            'First', 
-                                            'Second', 
-                                            'Third', 
-                                            'Fourth', 
-                                            'Fifth', 
-                                            'Sixth'])]
+    GRADES = [(-1, 'Preschool')] + [(i, v) 
+                                    for i, v 
+                                    in enumerate(['Kindergarten', 
+                                                  'First', 
+                                                  'Second', 
+                                                  'Third', 
+                                                  'Fourth', 
+                                                  'Fifth', 
+                                                  'Sixth'])]
     
     family = models.ForeignKey('Family',
                                on_delete=models.CASCADE,
@@ -159,6 +178,7 @@ class Child(A_Person):
     class Meta:
         verbose_name_plural = 'children'
     
+    @property
     def age(self):
         """ Figure out age from dob """
         if self.pk:
@@ -166,7 +186,13 @@ class Child(A_Person):
         else:
             return '-'
         
-    age.admin_order_field = 'dob'
+    def official_age(self):
+        if self.pk:
+            return (dt.date(dt.date.today().year, 9, 1) - self.dob).days // 365
+        else:
+            return '-'
+    official_age.admin_order_field = 'dob'
+    official_age.short_description = 'Official Age'
 
     def get_points(self):
         """ Get point tally from points table """
@@ -188,6 +214,14 @@ class Child(A_Person):
     def give_award(self):
         #TODO: Child.give_award()
         pass
+
+    def save(self, *args, **kwargs):
+        super(Child, self).save()
+        if 'family' in self.family.slug:
+            self.family.slug = ''
+            self.family.save()
+        
+        super(Child, self).save(*args, **kwargs)
 
 # Proxy models and managers for Clubber/Visitor types
 class ClubberManager(models.Manager):
@@ -216,10 +250,44 @@ class Visitor(Child):
 class Parent(A_Person, A_Contact):
     family = models.ForeignKey('Family',
                                related_name='parents')
-    email = models.EmailField()                           
+    phone = models.CharField(max_length=15,
+                             blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)                           
     prefer_phone = models.BooleanField()
     prefer_email = models.BooleanField()
 
+    def clean(self):
+        # Set address info from family, if blank
+        try:
+            for f in 'address city state zip'.split():
+                if not getattr(self, f):
+                    setattr(self, f, getattr(self.family, f))
+        except:
+            raise ValidationError(_('Parent has no family'))
+
+        # Require email or phone
+        if not any([self.phone, self.email]):
+            raise ValidationError(_('Parent form requires an email address or a phone number.'))
+
+        # Require data point for preferred contact method
+        for f in 'phone email'.split():
+            if getattr(self, 'prefer_'+f):
+                if not getattr(self, f):
+                    raise ValidationError(_('{0} must be provided if "Prefer {0}" is checked'.format(f.capitalize())))
+        if self.prefer_phone:
+            if not self.phone:
+                raise ValidationError(_('Phone must be provided if "Prefer Phone" is checked.'))
+        
+        if self.phone:
+            self.clean_phone()
+
+    def save(self, *args, **kwargs):
+        super(Parent, self).save()
+        if 'family' in self.family.slug:
+            self.family.slug = ''
+            self.family.save()
+        
+        super(Parent, self).save(*args, **kwargs)
 
 class Family(A_Contact):
     ICEContactName = models.CharField(max_length=150,
@@ -245,6 +313,17 @@ class Family(A_Contact):
     class Meta:
         verbose_name_plural = "families"
     
+    def clean(self):
+        for f in 'address city state zip'.split():
+            if not getattr(self, f):
+                raise ValidationError(_('{} is required.'.format(f.title())))
+        
+        pn = phonenumbers.parse(self.ICEContactPhone, "US")
+        if not all([phonenumbers.is_valid_number(pn), phonenumbers.is_possible_number(pn)]):
+            raise ValidationError(_("Phone number is invalid."))
+        else:
+            self.ICEContactPhone = phonenumbers.format_number(pn, phonenumbers.PhoneNumberFormat.NATIONAL)
+
     def save(self, *args, **kwargs):
         if not self.slug:
             value = 'family'
@@ -344,6 +423,13 @@ class Leader(AbstractUser, A_Contact):
         """ Check in on the leader attendance table """
         #TODO: Leader.check_in()
         pass
+
+    def clean(self):
+        for f in 'address city state zip'.split():
+            if not getattr(self, f):
+                raise ValidationError(_('{} is required.'.format(f.title())))
+        
+        self.clean_phone()
 
     def __str__(self):
         return self.get_full_name() or self.username

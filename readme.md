@@ -92,6 +92,7 @@ indicate that the project is active.
 3. Run `./manage.py runserver`
 4. Open a web browser to `http://127.0.0.1:8000/admin` to log into the admin
 interface using your superuser credentials
+    **Note:** If you don't know your superuser credentials, run `./manage.py createsuperuser` to make a new one.
 
 ### Making changes
 If you make changes to the files in the project directory, you should make sure
