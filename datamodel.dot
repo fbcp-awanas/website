@@ -1,0 +1,207 @@
+digraph awanas {
+
+concentrate=true;
+// splines=;
+
+node [shape=record];
+nodesep=.9;
+
+subgraph cluster_people {
+    label="People"
+    //Abstract Models
+    A_person [color=blue label="A_Person|{First Name|
+                                          Last Name|
+                                          full_name()}"];
+    A_contact [color=blue label="A_Contact|{Address|
+                                            City|
+                                            State|
+                                            Zip|
+                                            Phone}"];
+
+    // People
+    leader [color=magenta label="<id>Leader|{Position|
+                                             <group>Group|
+                                             Schedule|
+                                             <parent>Parent|
+                                             <cpp>CPP|
+                                             <check_in>check_in()}"];
+    child [color=darkgreen label="<id>Child|{<family>Family|
+                                             <dob>DOB|
+                                             Grade|
+                                             Gender|
+                                             Allergies|
+                                             Medications|
+                                             Special Instructions|
+                                             Photo Release|
+                                             Medical Release|
+                                             Notes|
+                                             <group>Group|
+                                             Color|
+                                             <guest>Guest|
+                                             Guest of|
+                                             <club>Club()|
+                                             <age>age()|
+                                             <off_age>official_age()|
+                                             <get_points>get_points()|
+                                             <add_points>add_points()|
+                                             <assign>assign_book()|
+                                             <record>perm_record()|
+                                             <attendance>get_attendance()}"];
+    visitor [label="<id>Visitor|{get_pickup()}"]
+    clubber [label="<id>Clubber|{<award>give_award()}"]
+    parent [label="<id>Parent|{<family>Family|
+                               <phone>Phone|
+                               <email>Email|
+                               <pref_ph>Prefer Phone|
+                               <pref_e>Prefer Email}"];
+    family [color=darkorange label="<id>Family|{Slug|
+                                                ICEContact|
+                                                ICEPhone|
+                                                Pickup|
+                                                Attend Church|
+                                                Church Name|
+                                                <children_sort>children_sort()|
+                                                <parents_sort>parents_sort()|
+                                                <get_contacts>get_contacts()|
+                                                <get_family>family|
+                                                <balance>get_balancesheet()|
+                                                <add_payment>add_payment()}"];
+}
+
+subgraph cluster_Club {
+    label = "Club";
+    group [color=red label="<id>Group|{Name|
+                                       Club|
+                                       Age|
+                                       <leader>Leaders|
+                                       <list_awards>list_awards()|
+                                       <list_clubbers>list_clubbers()|
+                                       <attendance>get_attendance()}" ];
+    handbook [label="<id>Handbook|{Name|
+                                   Club|
+                                   Entrance Book|
+                                   Extra Credit|
+                                   <inv>Inventory Number|
+                                   Verses|
+                                   sections()}"];
+    section [label="<id>Section|{Name|
+                                 <book>Book|
+                                 Content|
+                                 In Order|
+                                 Points}"];
+}
+
+subgraph cluster_Inv {
+    label = "Inventory";
+    inv [label="<id>Inventory|{<id>Item #|
+                               Quantity|
+                               <group>Group|
+                               Category|
+                               Order Threshold|
+                               Description|
+                               Picture|
+                               Price|
+                               Cost}"];
+}
+
+subgraph cluster_Activity {
+    label = "Activity"
+    activity [label="<id>Activity|{<child>Child|
+                                   <section>Section|
+                                   Complete|
+                                   Date|
+                                   <leader>Leader}"];
+    points [label="<id>Points|{<child>Child|
+                               Points|
+                               Reason|
+                               Date|
+                               <leader>Leader}"];
+    award [label="<id>Awards|{<child>Child|
+                              Description|
+                              Date Earned|
+                              Delivered}"];
+    attendance [label="<id>Attendance|{<child>Child|
+                                       DateTime|
+                                       Status|
+                                       OnTime}"];
+    l_attendance [label="<id>Leader Attendance|{<leader>Leader|
+                                                DateTime}"];
+    ledger [label="<id>Ledger|{<family>Family|
+                               Amount|
+                               Description|
+                               Date|
+                               Method}"];
+    expenses [label="<id>Expenses|{Date|
+                                   Receipt Date|
+                                   Receipt Store|
+                                   Items|
+                                   Category|
+                                   Amount|
+                                   Payee}"];
+    message [label="<id>Message|{Content|
+                                 DateTime|
+                                 <leader>Leader|
+                                 Source|
+                                 Complete|
+                                 CompletedBy}"]
+}
+
+
+
+// Inherited Model Relationships
+{
+    edge [color=blue style=dashed arrowhead=inv]
+    A_person:w -> leader:n
+    A_contact:w -> leader:n
+    A_person:w -> parent:n
+    A_contact:w -> parent:n
+    A_contact:w -> family:n
+    A_person:w -> child:n
+    child:guest:e -> visitor:n [label="proxy"]
+    child:guest:e -> clubber:n [label="proxy"]
+}
+
+// Foreign Keys
+// -> family
+{
+    edge [color=darkorange]
+    child:family:e -> family:id:w
+    parent:family:e -> family:id:w
+    ledger:family:e -> family:id:w
+}
+
+// -> child
+{
+    edge [color=darkgreen]
+    activity:child:e -> child:id:w
+    points:child:e -> child:id:w
+    award:child:e -> child:id:w
+    attendance:child:e -> child:id:w
+}
+
+// -> group
+{
+    edge [color=red]
+    child:group:e -> group:id:w
+    inv:group:e -> "group":id:w
+}
+
+// -> leader
+{
+    edge [color=magenta]
+    points:leader:e -> leader:id:w
+    l_attendance:leader:e -> leader:id:w
+    activity:leader:e -> leader:id:w
+    message:leader:e -> leader:id:w
+    "group":leader:e -> leader:group:e [color="magenta:invis:magenta"]
+}
+
+// -> *
+{
+    handbook:inv -> inv:id:w
+    section:book -> handbook:id:w
+    activity:section -> section:id:w
+}
+
+}
+

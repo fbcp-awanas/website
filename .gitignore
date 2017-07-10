@@ -2,8 +2,13 @@
 *~
 __pycache__
 myvenv
+pyvenv.cfg
 db.sqlite3
 /static
 .DS_Store
 /lib/
+/lib64
 /bin/
+/.vscode/
+pip-selfcheck.json
+/share/

@@ -1,0 +1,177 @@
+# Put hyphens under table names
+# If a link to another table needs to be established, list it as "item (=Table)"
+
+Family
+--------
+Address
+City
+State
+Zip
+ICEFirst
+ICELast
+ICEPhone
+PickUp
+ChurchY/N
+ChurchName
+PreferPh1Y/N
+PreferPh2Y/N
+PreferEmailY/N
+#How do we capture thier communication preferences if the adults are in another table? Can a method pull that info by family?
+Children#
+Scholarship$ Fall
+Scholarship$ Spring
+
+Adult
+--------
+Family (=Family)
+First Name
+Last Name
+Phone
+Email
+Address
+City
+State
+Zip
+PreferPhY/N
+PreferEmailY/N
+FamilyY/N
+Position
+Club
+Group
+Schedule
+
+Child
+--------
+Family (=Families)
+First Name
+Last Name
+DOB
+Age
+Grade
+Gender
+Allergies
+Medications
+SpecInst
+NoPicY/N
+MedRelY/N
+Notes
+Club
+Group
+Color
+Member/Visitor
+#Only if visitor
+Guest of
+
+Clubs
+--------
+Name
+Age
+
+Handbook
+--------
+Name
+Club (=Club)
+Age
+Entrance BookY/N
+Extra CreditY/N
+Inventory Number
+Sections#
+Verses#
+
+Sections
+--------
+Book (=Handbook)
+Name
+Content
+In OrderY/N
+Award
+#I would like to trigger an award alert if all the sections for an award are complete.
+#For one club, awards are given for every 4 sections completed.
+#For some clubs, completing a section earns points, bonus points are awarded if parent
+#signs that they have heard the verse at home, said word-perfect, and located in Bible.
+#Would those be fields in this table or another?
+#Puggles and Cubbies do not accrue points
+#Not sure how to do this...
+#During registration, I would like to be able to check if the child or leader needs a new uniform.
+#If they do, I would like to open another form to input size, club, etc.
+#The same thing will be needed for book for some clubs, but not all of them.
+#Puggles will always need a new book and uniform.
+
+Inventory
+--------
+Item #
+Qty
+Club
+Category
+Order Threshold
+Description
+Picture
+Price
+
+Dues
+------
+#Children
+Cost
+Semester
+
+Orders
+--------
+Item (from inventory table)
+Family (=Family)
+Date
+Qty
+
+Payments
+--------
+Family (=Family)
+Amount
+Date
+Method
+#I need to be able to look at outstanding balance (dues + orders) per family and overall.
+#I need to be able to see all payments or orders on a certain date.
+#Dues are due twice a year.
+#When kids check-in, I need the attendance to be recorded, and points awarded. I'm guessing I need a points ledger. Does that sound right?
+
+Attendance Child
+--------
+Child (=Child)
+#Club (from child table) - for the form, not the table
+#Group (from child table) - for the form, not the table
+Date
+#Maybe a column for each club date with a y/n. That would make it easy to see attendance trends.
+#How would we track visitors who attend multiple nights?
+
+Attendance Leader
+--------
+Leader (=Leader)
+Date
+
+Check In Points Sparks/T&T
+--------
+Attendance
+Book
+Bible
+Uniform
+On Time
+Guest
+
+Section Points Sparks/T&T
+--------
+Complete
+Parent
+Perfect
+Bible
+Section Complete
+Book Complete
+
+Expenses
+--------
+Date
+Receipt Date
+Receipt Store
+Items
+Category
+Amount
+Payee
+#I need to track Cubbies progress but not points.
+#Puggles only track attendance.
