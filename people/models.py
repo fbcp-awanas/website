@@ -214,12 +214,12 @@ class Child(A_Person):
         pass
 
     def save(self, *args, **kwargs):
-        super(Child, self).save()
+        super(Child, self).save(*args, **kwargs)
         if 'family' in self.family.slug:
             self.family.slug = ''
             self.family.save()
 
-        super(Child, self).save(*args, **kwargs)
+        super(Child, self).save()
 
 
 # Proxy models and managers for Clubber/Visitor types
@@ -282,12 +282,12 @@ class Parent(A_Person, A_Contact):
             self.clean_phone()
 
     def save(self, *args, **kwargs):
-        super(Parent, self).save()
+        super(Parent, self).save(*args, **kwargs)
         if 'family' in self.family.slug:
             self.family.slug = ''
             self.family.save()
 
-        super(Parent, self).save(*args, **kwargs)
+        super(Parent, self).save()
 
 
 class Family(A_Contact):
@@ -414,9 +414,10 @@ class Leader(AbstractUser, A_Contact):
                                 choices=POSITIONS,
                                 null=True, blank=True)
 
-    group = models.ForeignKey(Group,
-                              related_name='leaders',
-                              on_delete=models.CASCADE)
+    # This is assigned in the club.models.Group object
+    # group = models.ForeignKey(Group,
+    #                           related_name='leaders',
+    #                           on_delete=models.CASCADE)
 
     #TODO: What does this need to be?
     # schedule =

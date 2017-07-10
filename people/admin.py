@@ -7,7 +7,7 @@ from .models import Child, Family, Parent, Leader
 ADDRESSFIELDSET = [
     ('Address', {
         'fields': ('address',
-                  ('city', 'state', 'zip'))
+                   ('city', 'state', 'zip'))
     })
 ]
 
@@ -31,7 +31,7 @@ class FamilyAdmin(admin.ModelAdmin):
         ('Church Info', {
             'fields': (('attend_church', 'church_name'),)
         }),
-        ('Emergency Contact',{
+        ('Emergency Contact', {
             'fields': (('ICEContactName', 'ICEContactPhone'),)
         }),
         ('Pickup List', {
@@ -60,7 +60,7 @@ class ParentAdmin(admin.ModelAdmin):
         })] + [
         ('Address', {
             'fields': ('address',
-                      ('city', 'state', 'zip')),
+                       ('city', 'state', 'zip')),
             'classes': ('collapse',)
         })
     ] + CONTACTFIELDSET + [
@@ -99,7 +99,6 @@ class ChildAdmin(admin.ModelAdmin):
             if self.value() == 'tnt':
                 return queryset.filter(group__club='T')
 
-
     search_fields = ('first_name', 'last_name', 'family__slug')
     readonly_fields = ('age', 'official_age', 'club')
     fieldsets = (
@@ -137,13 +136,14 @@ class LeaderChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = Leader
 
+
 @admin.register(Leader)
 class LeaderAdmin(UserAdmin):
     fieldsets = NAMEFIELDSET + ADDRESSFIELDSET + CONTACTFIELDSET + [
         ('Leader Info', {
             'fields': (('position'),
-                        'cpp',
-                        'parent')
+                       'cpp',
+                       'parent')
         }),
         ('Admin Info', {
             'fields': (('username', 'password'),),
@@ -159,6 +159,6 @@ class LeaderAdmin(UserAdmin):
             'fields': ('last_login', 'date_joined'),
             'classes': ('collapse',)
         })
-        ]
+    ]
 
-    list_filter = (('group', admin.RelatedOnlyFieldListFilter),)
+    list_filter = (('group'),)
