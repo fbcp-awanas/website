@@ -6,7 +6,7 @@ from .models import Child, Family, Parent, Leader
 
 ADDRESSFIELDSET = [
     ('Address', {
-        'fields': ('address', 
+        'fields': ('address',
                   ('city', 'state', 'zip'))
     })
 ]
@@ -59,7 +59,7 @@ class ParentAdmin(admin.ModelAdmin):
             'fields': (('first_name', 'last_name', 'family'),)
         })] + [
         ('Address', {
-            'fields': ('address', 
+            'fields': ('address',
                       ('city', 'state', 'zip')),
             'classes': ('collapse',)
         })
@@ -70,7 +70,7 @@ class ParentAdmin(admin.ModelAdmin):
     ]
     list_display = ('full_name', 'family')
     list_filter = (('family', admin.RelatedOnlyFieldListFilter),)
-    
+
 
 @admin.register(Child)
 class ChildAdmin(admin.ModelAdmin):
@@ -86,7 +86,7 @@ class ChildAdmin(admin.ModelAdmin):
                 ('sparks', 'Sparks'),
                 ('tnt', 'Truth & Training')
             )
-        
+
         def queryset(self, request, queryset):
             if self.value() == 'awanas':
                 return queryset.filter(group__club='A')
@@ -99,7 +99,7 @@ class ChildAdmin(admin.ModelAdmin):
             if self.value() == 'tnt':
                 return queryset.filter(group__club='T')
 
-    
+
     search_fields = ('first_name', 'last_name', 'family__slug')
     readonly_fields = ('age', 'official_age', 'club')
     fieldsets = (
@@ -129,7 +129,7 @@ class ChildAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'guest', 'family', 'grade', 'official_age', 'group', 'color')
     list_editable = ('group', 'color', 'family',)
     list_filter = (('group', admin.RelatedOnlyFieldListFilter),
-                   ClubFilter, 
+                   ClubFilter,
                    'guest')
 
 
@@ -150,8 +150,8 @@ class LeaderAdmin(UserAdmin):
             'classes': ('collapse',)
         }),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 
-                       'is_superuser', 'groups', 
+            'fields': ('is_active', 'is_staff',
+                       'is_superuser', 'groups',
                        'user_permissions'),
             'classes': ('collapse',)
         }),
@@ -160,6 +160,5 @@ class LeaderAdmin(UserAdmin):
             'classes': ('collapse',)
         })
         ]
-    
-    # list_filter = (('group', admin.RelatedOnlyFieldListFilter),)
-        
+
+    list_filter = (('group', admin.RelatedOnlyFieldListFilter),)

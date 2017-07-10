@@ -1,11 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 import datetime as dt
-from django.utils import timezone
-from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from club.models import Group
@@ -18,7 +14,8 @@ GROUPLIST = (
     ('C', 'Cubbies'),
     ('S', 'Sparks'),
     ('T', 'Truth & Training')
-    )
+)
+
 
 class A_Person(models.Model):
     """ Abstract class defining name fields """
@@ -133,17 +130,17 @@ class Child(A_Person):
               ('Y', 'Yellow'),
               ('G', 'Green')
               )
-    
-    GRADES = [(-1, 'P-Preschool')] + [(i, v) 
-                                      for i, v 
-                                      in enumerate(['K-Kindergarten', 
-                                                    '1-First', 
-                                                    '2-Second', 
-                                                    '3-Third', 
-                                                    '4-Fourth', 
-                                                    '5-Fifth', 
+
+    GRADES = [(-1, 'P-Preschool')] + [(i, v)
+                                      for i, v
+                                      in enumerate(['K-Kindergarten',
+                                                    '1-First',
+                                                    '2-Second',
+                                                    '3-Third',
+                                                    '4-Fourth',
+                                                    '5-Fifth',
                                                     '6-Sixth'])]
-    
+
     family = models.ForeignKey('Family',
                                on_delete=models.CASCADE,
                                null=True,
@@ -152,8 +149,7 @@ class Child(A_Person):
     grade = models.IntegerField(choices=GRADES)
     gender = models.CharField(max_length=1,
                               choices=(("M", "Male"),
-                                       ("F", "Female"))
-                             )
+                                       ("F", "Female")))
     allergies = models.TextField(blank=True, null=True)
     medications = models.TextField(blank=True, null=True)
     special_instructions = models.TextField(blank=True, null=True)
@@ -161,8 +157,8 @@ class Child(A_Person):
     photo_release = models.NullBooleanField(help_text="Unknown: Release not received - Yes/No: Release status")
     medical_release = models.BooleanField()
     notes = models.TextField(blank=True, null=True)
-    group = models.ForeignKey(Group, 
-                              related_name='children', 
+    group = models.ForeignKey(Group,
+                              related_name='children',
                               on_delete=models.CASCADE)
     guest = models.BooleanField()
     guest_of = models.ForeignKey('self',
@@ -172,14 +168,14 @@ class Child(A_Person):
     color = models.CharField(max_length=1,
                              blank=True, null=True,
                              choices=COLORS)
-    
+
     @property
     def club(self):
         return self.group.club
-    
+
     class Meta:
         verbose_name_plural = 'children'
-    
+
     @property
     def age(self):
         """ Figure out age from dob """
@@ -187,7 +183,7 @@ class Child(A_Person):
             return (dt.date.today() - self.dob).days // 365
         else:
             return '-'
-        
+
     def official_age(self):
         if self.pk:
             return (dt.date(dt.date.today().year, 9, 1) - self.dob).days // 365
@@ -222,8 +218,9 @@ class Child(A_Person):
         if 'family' in self.family.slug:
             self.family.slug = ''
             self.family.save()
-        
+
         super(Child, self).save(*args, **kwargs)
+
 
 # Proxy models and managers for Clubber/Visitor types
 class ClubberManager(models.Manager):
@@ -238,13 +235,14 @@ class VisitorManager(models.Manager):
 
 class Clubber(Child):
     objects = ClubberManager()
-    
+
     class Meta:
         proxy = True
 
 
 class Visitor(Child):
     objects = VisitorManager()
+
     class Meta:
         proxy = True
 
@@ -254,7 +252,7 @@ class Parent(A_Person, A_Contact):
                                related_name='parents')
     phone = models.CharField(max_length=15,
                              blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)                           
+    email = models.EmailField(blank=True, null=True)
     prefer_phone = models.BooleanField()
     prefer_email = models.BooleanField()
 
@@ -273,13 +271,13 @@ class Parent(A_Person, A_Contact):
 
         # Require data point for preferred contact method
         for f in 'phone email'.split():
-            if getattr(self, 'prefer_'+f):
+            if getattr(self, 'prefer_' + f):
                 if not getattr(self, f):
                     raise ValidationError(_('{0} must be provided if "Prefer {0}" is checked'.format(f.capitalize())))
         if self.prefer_phone:
             if not self.phone:
                 raise ValidationError(_('Phone must be provided if "Prefer Phone" is checked.'))
-        
+
         if self.phone:
             self.clean_phone()
 
@@ -288,8 +286,9 @@ class Parent(A_Person, A_Contact):
         if 'family' in self.family.slug:
             self.family.slug = ''
             self.family.save()
-        
+
         super(Parent, self).save(*args, **kwargs)
+
 
 class Family(A_Contact):
     ICEContactName = models.CharField(max_length=150,
@@ -314,12 +313,12 @@ class Family(A_Contact):
 
     class Meta:
         verbose_name_plural = "families"
-    
+
     def clean(self):
         for f in 'address city state zip'.split():
             if not getattr(self, f):
                 raise ValidationError(_('{} is required.'.format(f.title())))
-        
+
         pn = phonenumbers.parse(self.ICEContactPhone, "US")
         if not all([phonenumbers.is_valid_number(pn), phonenumbers.is_possible_number(pn)]):
             raise ValidationError(_("Phone number is invalid."))
@@ -339,7 +338,7 @@ class Family(A_Contact):
                 if not Family.objects.filter(slug=self.slug).exists():
                     break
                 self.slug = '{o}-{x}'.format(o=orig, x=x)
-            
+
         super(Family, self).save(*args, **kwargs)
 
     def children_short(self):
@@ -351,21 +350,21 @@ class Family(A_Contact):
     parents_short.short_description = 'Parents'
 
     def get_contacts(self):
-        """ 
-        Get the preferred contact information for parents in this family 
+        """
+        Get the preferred contact information for parents in this family
         Return value is a dict containing two elements, 'phone' and 'email,
           both lists of contact methods for this family
         """
         contacts = {
             'email': [],
             'phone': []
-            }
+        }
         for parent in self.parents.select_related():
             if parent.prefer_email:
                 contacts['email'].append(parent.email)
             if parent.prefer_phone:
                 contacts['phone'].append(parent.phone)
-        return contacts     
+        return contacts
 
     @property
     def family(self):
@@ -405,7 +404,7 @@ class Leader(AbstractUser, A_Contact):
         ('Web', 'Webmaster')
     )
     #TODO: add ability to have multiple leader positions
-    
+
     parent = models.OneToOneField(Parent,
                                   on_delete=models.PROTECT,
                                   blank=True, null=True)
@@ -414,8 +413,13 @@ class Leader(AbstractUser, A_Contact):
     position = models.CharField(max_length=9,
                                 choices=POSITIONS,
                                 null=True, blank=True)
+
+    group = models.ForeignKey(Group,
+                              related_name='leaders',
+                              on_delete=models.CASCADE)
+
     #TODO: What does this need to be?
-    # schedule = 
+    # schedule =
 
     def check_in(self):
         """ Check in on the leader attendance table """
@@ -426,7 +430,7 @@ class Leader(AbstractUser, A_Contact):
         for f in 'address city state zip'.split():
             if not getattr(self, f):
                 raise ValidationError(_('{} is required.'.format(f.title())))
-        
+
         self.clean_phone()
 
     def __str__(self):
