@@ -99,6 +99,12 @@ indicate that the project is active.
 interface using your superuser credentials
     **Note:** If you don't know your superuser credentials, run `./manage.py createsuperuser` to make a new one.
 
+### Importing dummy data
+1. In the active virtual environment, run:
+    ```
+    ./manage.py shell <dummydata.py
+    ```
+
 ### Starting over
 It may be necessary to start from scratch (for example, to test new procedures with dummy data). If so:
 
