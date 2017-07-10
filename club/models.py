@@ -1,6 +1,7 @@
 from django.db import models
 import people
 
+
 class Group(models.Model):
     CLUBLIST = (
         ('A', 'Awanas'),
@@ -8,21 +9,23 @@ class Group(models.Model):
         ('C', 'Cubbies'),
         ('S', 'Sparks'),
         ('T', 'Truth & Training')
-        )
-    
+    )
+
     name = models.CharField(max_length=20,
                             help_text="What should this club be called?")
     club = models.CharField(max_length=1,
                             choices=CLUBLIST,
                             default='A')
     age = models.CharField(max_length=10,
-                           help_text="Age range for this group.")
+                           help_text="Age range for this group.",
+                           blank=True, null=True)
     grades = models.CharField(max_length=10,
-                              help_text="Grades included in this group.")
+                              help_text="Grades included in this group.",
+                              blank=True, null=True)
     leaders = models.ManyToManyField('people.Leader',
                                      related_name='group',
                                      blank=True)
-    
+
     def list_awards(self):
         """ Get a list of all of the outstanding awards for this group """
         pass
