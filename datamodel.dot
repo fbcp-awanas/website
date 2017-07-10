@@ -1,27 +1,14 @@
 digraph awanas {
 
-// concentrate=true;
+concentrate=true;
 // splines=;
 
 node [shape=record];
-nodesep=.6;
+nodesep=.9;
 
-// Rank-order
-{
-    node [shape=plaintext];
-    edge [style=invis];
-    abstract -> primary -> secondary -> tertiary -> progress;
-}
-{
-    { rank=same; abstract; A_person; A_contact; }
-    { rank=same; primary; family; expenses; group; };
-    { rank=same; secondary; child; parent; handbook; leader;};
-    { rank=same; tertiary; visitor; clubber; section; inv; };
-    { rank=same; progress; ledger; points; attendance; l_attendance; award; activity; message};
-}
-
-//Abstract Models
-{
+subgraph cluster_people {
+    label="People"
+    //Abstract Models
     A_person [color=blue label="A_Person|{First Name|
                                           Last Name|
                                           full_name()}"];
@@ -29,15 +16,14 @@ nodesep=.6;
                                             City|
                                             State|
                                             Zip|
-                                            Phone|
-                                            Email}"];
-}
+                                            Phone}"];
 
-// People
-{
+    // People
     leader [color=magenta label="<id>Leader|{Position|
                                              <group>Group|
                                              Schedule|
+                                             <parent>Parent|
+                                             <cpp>CPP|
                                              <check_in>check_in()}"];
     child [color=darkgreen label="<id>Child|{<family>Family|
                                              <dob>DOB|
@@ -53,7 +39,9 @@ nodesep=.6;
                                              Color|
                                              <guest>Guest|
                                              Guest of|
+                                             <club>Club()|
                                              <age>age()|
+                                             <off_age>official_age()|
                                              <get_points>get_points()|
                                              <add_points>add_points()|
                                              <assign>assign_book()|
@@ -62,6 +50,8 @@ nodesep=.6;
     visitor [label="<id>Visitor|{get_pickup()}"]
     clubber [label="<id>Clubber|{<award>give_award()}"]
     parent [label="<id>Parent|{<family>Family|
+                               <phone>Phone|
+                               <email>Email|
                                <pref_ph>Prefer Phone|
                                <pref_e>Prefer Email}"];
     family [color=darkorange label="<id>Family|{Slug|
@@ -70,16 +60,16 @@ nodesep=.6;
                                                 Pickup|
                                                 Attend Church|
                                                 Church Name|
-                                                <get_clubbers>get_clubbers()|
-                                                <get_parents>get_parents()|
+                                                <children_sort>children_sort()|
+                                                <parents_sort>parents_sort()|
                                                 <get_contacts>get_contacts()|
-                                                <get_family>get_family()|
+                                                <get_family>family|
                                                 <balance>get_balancesheet()|
                                                 <add_payment>add_payment()}"];
 }
 
-// Club Info
- {
+subgraph cluster_Club {
+    label = "Club";
     group [color=red label="<id>Group|{Name|
                                        Club|
                                        Age|
@@ -88,7 +78,7 @@ nodesep=.6;
                                        <list_clubbers>list_clubbers()|
                                        <attendance>get_attendance()}" ];
     handbook [label="<id>Handbook|{Name|
-                                   <group>Group|
+                                   Club|
                                    Entrance Book|
                                    Extra Credit|
                                    <inv>Inventory Number|
@@ -99,6 +89,10 @@ nodesep=.6;
                                  Content|
                                  In Order|
                                  Points}"];
+}
+
+subgraph cluster_Inv {
+    label = "Inventory";
     inv [label="<id>Inventory|{<id>Item #|
                                Quantity|
                                <group>Group|
@@ -108,6 +102,10 @@ nodesep=.6;
                                Picture|
                                Price|
                                Cost}"];
+}
+
+subgraph cluster_Activity {
+    label = "Activity"
     activity [label="<id>Activity|{<child>Child|
                                    <section>Section|
                                    Complete|
@@ -150,7 +148,7 @@ nodesep=.6;
 
 
 
-// Abstract Model Relationships
+// Inherited Model Relationships
 {
     edge [color=blue style=dashed arrowhead=inv]
     A_person:w -> leader:n
@@ -184,7 +182,6 @@ nodesep=.6;
 // -> group
 {
     edge [color=red]
-    handbook:group:e -> group:id:w
     child:group:e -> group:id:w
     inv:group:e -> "group":id:w
 }
