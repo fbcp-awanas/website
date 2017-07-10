@@ -236,12 +236,20 @@ class VisitorManager(models.Manager):
 class Clubber(Child):
     objects = ClubberManager()
 
+    def give_award(self):
+        # Assign an award
+        pass
+
     class Meta:
         proxy = True
 
 
 class Visitor(Child):
     objects = VisitorManager()
+
+    def get_pickup(self):
+        # Get pickup list from visitor and host family
+        pass
 
     class Meta:
         proxy = True
@@ -413,11 +421,6 @@ class Leader(AbstractUser, A_Contact):
     position = models.CharField(max_length=9,
                                 choices=POSITIONS,
                                 null=True, blank=True)
-
-    # This is assigned in the club.models.Group object
-    # group = models.ForeignKey(Group,
-    #                           related_name='leaders',
-    #                           on_delete=models.CASCADE)
 
     #TODO: What does this need to be?
     # schedule =

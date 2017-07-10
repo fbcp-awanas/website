@@ -1,16 +1,17 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 import people
+
+CLUBLIST = (
+    ('A', 'Awanas'),
+    ('P', 'Puggles'),
+    ('C', 'Cubbies'),
+    ('S', 'Sparks'),
+    ('T', 'Truth & Training')
+)
 
 
 class Group(models.Model):
-    CLUBLIST = (
-        ('A', 'Awanas'),
-        ('P', 'Puggles'),
-        ('C', 'Cubbies'),
-        ('S', 'Sparks'),
-        ('T', 'Truth & Training')
-    )
-
     name = models.CharField(max_length=20,
                             help_text="What should this club be called?")
     club = models.CharField(max_length=1,
@@ -40,3 +41,41 @@ class Group(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Handbook(models.Model):
+    name = models.CharField(max_length=30,
+                            help_text="Name of the handbook")
+    club = models.CharField(max_length=1,
+                            choices=CLUBLIST,
+                            help_text="What club is this book for?")
+    entrance_book = models.BooleanField(default=False,
+                                        help_text="Is this an entrance book?")
+    # Need to know what these should be
+    # extra_credit = 
+    # verses = 
+    inventory_number = models.IntegerField(help_text="Inventory number for this book",
+                                           blank=True, null=True)
+
+    def get_sections(self):
+        return self.sections.select_related()
+
+    def __str__(self):
+        return _(self.name)
+
+
+class Section(models.Model):
+    name = models.CharField(max_length=30,
+                            help_text="Name of the section")
+    book = models.name = models.ForeignKeyField('Handbook',
+                                                related_name='sections',
+                                                on_delete=models.CASCADE)
+    # What goes here?
+    # content = 
+    in_order = models.BooleanField(default=False,
+                                   help_text="Does the section have to be done in order?")
+    points = models.IntegerField(help_text="How many points is the section worth?",
+                                 default=1)
+
+    def __str__(self):
+        return _('{}: {}'.format(self.book.name, self.name))
