@@ -6,6 +6,16 @@ concentrate=true;
 node [shape=record];
 nodesep=.9;
 
+subgraph cluster_admin {
+    label = "Admin"
+    message [label="<id>Message|{Content|
+                                 DateTime|
+                                 <leader>Leader|
+                                 Source|
+                                 Complete|
+                                 CompletedBy}"]
+}
+
 subgraph cluster_people {
     label="People"
     //Abstract Models
@@ -89,23 +99,7 @@ subgraph cluster_Club {
                                  Content|
                                  In Order|
                                  Points}"];
-}
-
-subgraph cluster_Inv {
-    label = "Inventory";
-    inv [label="<id>Inventory|{<id>Item #|
-                               Quantity|
-                               <group>Group|
-                               Category|
-                               Order Threshold|
-                               Description|
-                               Picture|
-                               Price|
-                               Cost}"];
-}
-
-subgraph cluster_Activity {
-    label = "Activity"
+                                 
     activity [label="<id>Activity|{<child>Child|
                                    <section>Section|
                                    Complete|
@@ -126,6 +120,19 @@ subgraph cluster_Activity {
                                        OnTime}"];
     l_attendance [label="<id>Leader Attendance|{<leader>Leader|
                                                 DateTime}"];
+}
+
+subgraph cluster_Inv {
+    label = "Inventory";
+    inv [label="<id>Inventory|{<id>Item #|
+                               Quantity|
+                               <group>Group|
+                               Category|
+                               Order Threshold|
+                               Description|
+                               Picture|
+                               Price|
+                               Cost}"];
     ledger [label="<id>Ledger|{<family>Family|
                                Amount|
                                Description|
@@ -138,14 +145,7 @@ subgraph cluster_Activity {
                                    Category|
                                    Amount|
                                    Payee}"];
-    message [label="<id>Message|{Content|
-                                 DateTime|
-                                 <leader>Leader|
-                                 Source|
-                                 Complete|
-                                 CompletedBy}"]
 }
-
 
 
 // Inherited Model Relationships
