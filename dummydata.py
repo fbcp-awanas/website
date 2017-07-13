@@ -5,14 +5,12 @@ import pdb
 import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-#TODO: Add dummy groups
-
 groups = [
     {'name': 'Awanas', 'club': 'A', 'age': 'all', 'grades': 'all'},
-    {'name': 'Puggles 1', 'club': 'P', 'age': '', 'grades': ''},
-    {'name': 'Cubbies 1', 'club': 'C', 'age': '', 'grades': ''},
-    {'name': 'Sparks 1', 'club': 'S', 'age': '', 'grades': ''},
-    {'name': 'T&T 1', 'club': 'T', 'age': '', 'grades': ''}
+    {'name': 'Puggles 1', 'club': 'P', 'age': '2-3', 'grades': ''},
+    {'name': 'Cubbies 1', 'club': 'C', 'age': '3-5', 'grades': ''},
+    {'name': 'Sparks 1', 'club': 'S', 'age': '', 'grades': 'K-2'},
+    {'name': 'T&T 1', 'club': 'T', 'age': '', 'grades': '3-6'}
 ]
 
 group_ids = {}
