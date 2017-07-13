@@ -61,21 +61,21 @@ class Handbook(models.Model):
         return self.sections.select_related()
 
     def __str__(self):
-        return _(self.name)
+        return (self.name)
 
 
 class Section(models.Model):
     name = models.CharField(max_length=30,
                             help_text="Name of the section")
-    book = models.name = models.ForeignKeyField('Handbook',
-                                                related_name='sections',
-                                                on_delete=models.CASCADE)
-    # What goes here?
-    # content = 
+    book = models.name = models.ForeignKey('Handbook',
+                                           related_name='sections',
+                                           on_delete=models.CASCADE)
+    content = models.TextField(help_text="What's in this section?",
+                               blank=True, null=True)
     in_order = models.BooleanField(default=False,
                                    help_text="Does the section have to be done in order?")
     points = models.IntegerField(help_text="How many points is the section worth?",
                                  default=1)
 
     def __str__(self):
-        return _('{}: {}'.format(self.book.name, self.name))
+        return ('{}: {}'.format(self.book.name, self.name))
