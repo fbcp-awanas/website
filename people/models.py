@@ -299,6 +299,10 @@ class Parent(A_Person, A_Contact):
 
 
 class Family(A_Contact):
+    name = models.CharField(max_length=50,
+                            help_text="Friendly name for the family",
+                            verbose_name="Family Name",
+                            null=True, blank=True)
     ICEContactName = models.CharField(max_length=150,
                                       verbose_name="Emergency Contact Name")
     ICEContactPhone = models.CharField(max_length=20,
@@ -313,7 +317,7 @@ class Family(A_Contact):
                                    blank=True, null=True,)
     slug = models.SlugField(unique=True,
                             blank=True, null=True,
-                            verbose_name='Family Name',
+                            verbose_name='Family ID',
                             help_text='Family identifier. Leave blank to generate one from child/parent names.')
 
     # Don't need these at the family level
@@ -334,18 +338,20 @@ class Family(A_Contact):
             self.ICEContactPhone = phonenumbers.format_number(pn, phonenumbers.PhoneNumberFormat.NATIONAL)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.name:
             value = 'family'
             if self.children.select_related():
                 value = self.children.select_related()[0].last_name
             elif self.parents.select_related():
                 value = self.parents.select_related()[0].last_name
+            self.name = value
 
-            self.slug = orig = value
+        if not self.slug:
+            value = self.name[0].upper()
             for x in itertools.count(1):
+                self.slug = '{v}{y}{n:02}'.format(v=value, y=17, n=x)
                 if not Family.objects.filter(slug=self.slug).exists():
                     break
-                self.slug = '{o}-{x}'.format(o=orig, x=x)
 
         super(Family, self).save(*args, **kwargs)
 

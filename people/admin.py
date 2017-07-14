@@ -26,7 +26,8 @@ NAMEFIELDSET = [
 
 @admin.register(Family)
 class FamilyAdmin(admin.ModelAdmin):
-    list_display = ('slug', 'children_short', 'parents_short')
+    list_display = ('slug', 'name', 'children_short', 'parents_short')
+    search_fields = ['name', 'slug']
     fieldsets = ADDRESSFIELDSET + [
         ('Church Info', {
             'fields': (('attend_church', 'church_name'),)
@@ -43,11 +44,13 @@ class FamilyAdmin(admin.ModelAdmin):
         })
     ]
 
+    list_display_links = ['name', 'slug']
+
     def update_slug(modeladmin, request, queryset):
         queryset.update(slug='')
         for f in queryset:
             f.save()
-    update_slug.short_description = "Update family name"
+    update_slug.short_description = "Update family id"
 
     actions = [update_slug]
 
@@ -99,7 +102,7 @@ class ChildAdmin(admin.ModelAdmin):
             if self.value() == 'tnt':
                 return queryset.filter(group__club='T')
 
-    search_fields = ('first_name', 'last_name', 'family__slug')
+    search_fields = ('first_name', 'last_name', 'family__slug', 'family__name')
     readonly_fields = ('age', 'official_age', 'club')
     fieldsets = (
         (None, {
